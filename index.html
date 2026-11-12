@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GameZone - Play Games Online</title>
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #101116;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  background: #191a22;
+  padding: 18px 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.logo {
+  font-size: 27px;
+  font-weight: bold;
+  color: #ffb800;
+}
+
+.search {
+  background: #292b36;
+  border: 1px solid #393b47;
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: white;
+  width: 280px;
+  max-width: 100%;
+  outline: none;
+}
+
+.categories {
+  padding: 20px 5%;
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+}
+
+.categories button {
+  background: #252731;
+  color: white;
+  border: none;
+  padding: 11px 20px;
+  border-radius: 9px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.categories button:hover,
+.categories button.active {
+  background: #ffb800;
+  color: black;
+}
+
+h2 {
+  padding: 10px 5% 20px;
+  font-size: 25px;
+}
+
+.games {
+  padding: 0 5% 40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 20px;
+}
+
+.game {
+  background: #1c1e28;
+  border-radius: 13px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.game:hover {
+  transform: translateY(-5px);
+}
+
+.game img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+.game h3 {
+  padding: 13px;
+  font-size: 16px;
+}
+
+.game p {
+  padding: 0 13px 13px;
+  color: #aaa;
+  font-size: 13px;
+}
+
+footer {
+  text-align: center;
+  padding: 30px;
+  color: #777;
+}
+
+#player {
+  display: none;
+  padding: 20px 5%;
+}
+
+#player iframe {
+  width: 100%;
+  height: min(70vh, 650px);
+  border: none;
+  border-radius: 12px;
+  background: #000;
+}
+
+#player button {
+  margin-bottom: 15px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #ffb800;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+@media(max-width: 600px) {
+  header {
+    justify-content: center;
+  }
+  .search {
+    width: 100%;
+  }
+  .games {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  h2 {
+    font-size: 21px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">🎮 GameZone</div>
+  <input class="search" id="search"
+    placeholder="🔍 Search games..."
+    oninput="renderGames()">
+</header>
+
+<nav class="categories" id="categories">
+  <button class="active" onclick="setCategory('All',this)">All Games</button>
+  <button onclick="setCategory('Action',this)">Action</button>
+  <button onclick="setCategory('Racing',this)">Racing</button>
+  <button onclick="setCategory('Puzzle',this)">Puzzle</button>
+  <button onclick="setCategory('Arcade',this)">Arcade</button>
+</nav>
+
+<h2 id="heading">🔥 Popular Games</h2>
+
+<main class="games" id="games"></main>
+
+<section id="player">
+  <button onclick="closeGame()">← Back to games</button>
+  <h2 id="gameTitle"></h2>
+  <iframe id="gameFrame" allowfullscreen></iframe>
+</section>
+
+<footer>
+  © 2026 GameZone | Play anywhere, anytime!
+</footer>
+
+<script>
+const games = [
+  {
+    name: "2048",
+    category: "Puzzle",
+    image: "https://images.unsplash.com/photo-1611996575749-79a3a250f948?w=500",
+    url: "https://play2048.co/"
+  },
+  {
+    name: "Hextris",
+    category: "Arcade",
+    image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=500",
+    url: "https://hextris.io/"
+  },
+  {
+    name: "Slope",
+    category: "Arcade",
+    image: "https://images.unsplash.com/photo-1535223289827-42f1e9919769?w=500",
+    url: "https://slopegame.online/"
+  },
+  {
+    name: "Moto X3M",
+    category: "Racing",
+    image: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=500",
+    url: "https://motox3m.io/"
+  },
+  {
+    name: "Chess",
+    category: "Puzzle",
+    image: "https://images.unsplash.com/photo-1586165368502-1bad197a6461?w=500",
+    url: "https://www.chess.com/play/online"
+  },
+  {
+    name: "Pac-Man",
